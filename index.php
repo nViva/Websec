@@ -8,8 +8,22 @@
   if (isset($_GET['logout'])) {
   	session_destroy();
   	unset($_SESSION['username']);
+     
   	header("location: login.php");
-  }
+   }
+?>
+<?php
+
+include 'csrf.class.php';
+ 
+$csrf = new csrf();
+ 
+// Generate Token Id and Valid
+$token_id = $csrf->get_token_id();
+$token_value = $csrf->get_token($token_id);
+if($csrf->check_valid('post')) {
+  var_dump($_POST[$token_id]);
+} 
 ?>
 <!DOCTYPE html>
 <html>
@@ -18,7 +32,7 @@
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-
+<input type="hidden" name="<?= $token_id; ?>" value="<?= $token_value; ?>" />
 <div class="header">
 	<h2>Home Page</h2>
 </div>
@@ -38,9 +52,8 @@
     <!-- logged in user information -->
     <?php  if (isset($_SESSION['username'])) : ?>
     	<p>Welcome <strong><?php echo $_SESSION['username']; ?></strong></p>
-    	<p> <a href="index.php?logout='1'" style="color: red;">logout</a> </p>
+    	<p> <a href="index.php?logout='1'" style="color: red;float: right;">Logout</a> </p>
     <?php endif ?>
 </div>
-		
 </body>
 </html>

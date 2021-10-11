@@ -12,12 +12,11 @@ if($csrf->check_valid('post')) {
 } 
 ?>
 
-
 <?php include('server.php') ?>
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Registration system PHP and MySQL</title>
+  <title>Web Security</title>
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
@@ -29,21 +28,20 @@ if($csrf->check_valid('post')) {
   	<?php include('errors.php'); ?>
   	<div class="input-group">
   		<label>Username</label>
-  		<input type="text" name="username" value="<?php echo @$_COOKIE['cuser'];?>">
+  		<input type="text" name="username"value="<?php if(isset($_COOKIE['cuser'])){echo $_COOKIE['cuser'];}?>">
   	</div>
   	<div class="input-group">
   		<label>Password</label>
-  		<input type="password" name="password" value="<?php echo @$_COOKIE['cpass'];?>">
+  		<input type="password" name="password" value="<?php if(isset($_COOKIE['cpass'])){echo $_COOKIE['cpass'];}?>">
   	</div>
   <input type="hidden" name="<?= $token_id; ?>" value="<?= $token_value; ?>" />
-      <input type="checkbox" id="remember" name="remember">
+      <input type="checkbox" id="remember" name="remember" <?php if(isset($_COOKIE["cuser"])) { ?> checked <?php } ?>>
   <label> Remember Me</label>
-    
   	<div class="input-group">
   		<button type="submit" class="btn" name="login_user">Login</button>
   	</div>
   	<p>
-  		Not yet a user? <a href="register.php">Sign up</a>
+  		Not yet a user ? <a href="register.php">Sign up</a>
   	</p>
   </form>
 </body>

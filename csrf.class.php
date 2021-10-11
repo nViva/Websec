@@ -1,4 +1,5 @@
 <?php
+//token based id
 class csrf {
 	
 	public function get_token_id() {
@@ -46,7 +47,6 @@ class csrf {
                 fclose($f);
                 $return = '';
         }
- 
         if (empty($return)) {
                 for ($i=0;$i<$len;++$i) {
                         if (!isset($urandom)) {
