@@ -36,12 +36,12 @@ if($csrf->check_valid('post')) {
   	</div>
   <input type="hidden" name="<?= $token_id; ?>" value="<?= $token_value; ?>" />
       <input type="checkbox" id="remember" name="remember" <?php if(isset($_COOKIE["cuser"])) { ?> checked <?php } ?>>
-  <label> Remember Me</label>
+  <label> Remember Me </label>
   	<div class="input-group">
   		<button type="submit" class="btn" name="login_user">Login</button>
-  	</div>
+  	<?php include('verifynow.php'); ?></div>
   	<p>
-  		Not yet a user ? <a href="register.php">Sign up</a>
+  		Not yet a user ? <a href="register.php">Sign up</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="forgot.php">Forgot Password?</a>
   	</p>
   </form>
 </body>

@@ -5,6 +5,7 @@ session_start();
 $username = "";
 
 $errors = array(); 
+$verifynow = array(); 
 
 // connect to the database
 //$db = new mysqli('localhost', 'root', '', 'websec');
@@ -13,12 +14,21 @@ require_once('dbconnect.php');
 if (isset($_POST['reg_user'])) {
   // receive all input values from the form
   $username = $db->real_escape_string($_POST['username']);
-
+  $email = $db->real_escape_string($_POST['email']);
   $password_1 = $db->real_escape_string($_POST['password_1']);
   $password_2 = $db->real_escape_string($_POST['password_2']);
 
   // form validation: ensure that the form is correctly filled ...
   // by adding (array_push()) corresponding error unto $errors array
+  if (empty($email)) {
+    array_push($errors, "Email is required");
+  } else {
+   
+    // check if e-mail address is well-formed
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      array_push($errors, "Invalid Email format");
+    }
+  }
   if (empty($username)) { array_push($errors, "Username is required"); }
  
   if (empty($password_1)) { array_push($errors, "Password is required"); }
@@ -48,21 +58,43 @@ $stmt->close();
    
       array_push($errors, "Username already exists");
     }
+    $result ="SELECT count(*) FROM users WHERE email=?";
+$stmt = $db->prepare($result);
+$stmt->bind_param('s',$email);
+$stmt->execute();
+$stmt->bind_result($count);
+$stmt->fetch();
+$stmt->close();
+  if ($count>0) { // if user exists
+   
+      array_push($errors, "This email is assigned to another account.");
+    }
 
   // Finally, register user if there are no errors in the form
   if (count($errors) == 0) {
     $password = sha1($password_1);//encrypt the password before saving in the database
-
-    $query = "INSERT INTO users(username,password) 
-          VALUES(?,?)";
+$otp= mt_rand(100000, 999999);
+$status="Not verified";
+    $query = "INSERT INTO users(username,password,email,activation_code,email_status) 
+          VALUES(?,?,?,?,?)";
   $stmti = $db->prepare($query);
-$stmti->bind_param('ss',$username,$password);
+$stmti->bind_param('sssis',$username,$password,$email,$otp,$status);
 $stmti->execute();
 $stmti->close();
     $_SESSION['username'] = $username;
     $_SESSION['pwd'] = $password;
-    $_SESSION['success'] = "You are now an Authorized user";
-    header('location: index.php');
+    $_SESSION['em'] = $email;
+    $_SESSION['code'] = $otp;
+    //$_SESSION['stat'] = $status;
+    $to=$email;
+    $from="From: viateurvnshimiyimana@gmail.com";
+    $subject="Verification Code for Viateur Website";
+    $message =$otp;
+  
+    $mailing = mail($to,$subject,$message,$from);
+
+    header('location: verify_email.php');
+    
   }
 }
 
@@ -92,6 +124,14 @@ if (isset($_POST['login_user'])) {
     $num_rows = $result->num_rows;
   }
   if($num_rows > 0){
+    
+$query = "SELECT * FROM users WHERE email_status='Verified' ";
+    $stmt = $db->prepare($query);
+    if($stmt->execute()){
+    $result = $stmt->get_result();
+    $num_rows = $result->num_rows;
+  }
+  if($num_rows > 0){
    
       $_SESSION['username'] = $username;
       $_SESSION['success'] = "You are now logged in";
@@ -112,6 +152,12 @@ setcookie ("cpass","");
   
   }
   header('location:index.php');
+}
+else{
+
+array_push($errors, "Account Not Verified ");
+array_push($verifynow, "Verify Now ");
+}
 }else {
       array_push($errors, "Wrong username/password combination ");
     }
