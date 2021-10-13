@@ -72,7 +72,10 @@ $stmt->close();
 
   // Finally, register user if there are no errors in the form
   if (count($errors) == 0) {
-    $password = sha1($password_1);//encrypt the password before saving in the database
+    //encrypt the password before saving in the database
+    $salt="Viateurwebsite".$password_1;
+    $password=hash('sha1', $salt);
+    
 $otp= mt_rand(100000, 999999);
 $status="Not verified";
     $query = "INSERT INTO users(username,password,email,activation_code,email_status) 
@@ -115,7 +118,8 @@ if (isset($_POST['login_user'])) {
   if (count($errors) == 0) {
 
     $cpassword=$password;
-    $password = sha1($password);
+   $salt="Viateurwebsite".$password;
+    $password=hash('sha1', $salt);
     $query = "SELECT * FROM users WHERE username=? AND password=?";
     $stmt = $db->prepare($query);
     $stmt->bind_param('ss',$username,$password);
@@ -125,7 +129,7 @@ if (isset($_POST['login_user'])) {
   }
   if($num_rows > 0){
     
-$query = "SELECT * FROM users WHERE email_status='Verified' ";
+$query = "SELECT * FROM users WHERE username='$username' AND password='$password' AND email_status='Verified' ";
     $stmt = $db->prepare($query);
     if($stmt->execute()){
     $result = $stmt->get_result();

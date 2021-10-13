@@ -26,7 +26,7 @@ else{
   if($a>=1){
 	$selector=bin2hex(random_bytes(8));
 	$token=random_bytes(32);
-	$validator=bin2hex($token);
+	//$validator=bin2hex($token);
 	$url="http://localhost/websec/New/resetpassword.php?selector=".$selector;
 	$expires=date("U")+1800;
 	
@@ -41,7 +41,7 @@ else{
 }
 $q="insert into password_reset(email,selector,validator) values(?,?,?)";
 $stmt= mysqli_stmt_init($db);
-if (!mysqli_stmt_prepare($stmt,$q)) {
+if (!mysqli_stmt_prepare($stmt,$q)) {  
  echo "statement failed";
 }
 else{
@@ -63,7 +63,8 @@ mail($to, $subject, $message, $headers);
 array_push($errors, "Reset Link has been sent to your email. Use it to reset you password");
 }
 else{
-	echo "Email not found";
+	
+  array_push($errors, "Email not found");
 }
 }
 ?>

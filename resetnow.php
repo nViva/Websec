@@ -53,7 +53,8 @@ if(strlen($password_1) < 10 || !$number || !$uppercase || !$lowercase || !$speci
         }
       }
       if($count==1){
-        $password=sha1($password_1);
+        $salt="Viateurwebsite".$password_1;
+    $password=hash('sha1', $salt);
         $query = "UPDATE users SET password='$password' WHERE email=? ";
   $stmti = $db->prepare($query);
 $stmti->bind_param('s',$email2);
@@ -70,8 +71,7 @@ header('location:index.php');
   }
  else{ 
 
-array_push($errors, "Passwords do not match");
-header("location:resetpassword.php?selector=$selector");
+header("location:resetpassword.php?selector=$selector&message=matching");
   }
 }
 

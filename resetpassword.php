@@ -1,8 +1,10 @@
 
 <?php 
+$errors = array(); 
 $selector = $_GET['selector'];
 if(empty($selector)){
-  echo " Password Can not be reset";
+  
+  array_push($errors, "Password Can not be reset");
 }
 else{
 
@@ -21,7 +23,15 @@ else{
   </div>
 	
   <form method="post" action="resetnow.php">
-  	
+  	<?php 
+
+if(!empty($_GET['message'])){
+  if($_GET['message']=='matching'){
+   //echo"Passwords do not match";
+   array_push($errors, "Passwords do not match");
+  }
+}?>
+<?php include('errors.php') ?>
   	
   	<div class="input-group">
   	  <label>Password</label>

@@ -41,7 +41,7 @@ if($csrf->check_valid('post')) {
   		<button type="submit" class="btn" name="login_user">Login</button>
   	<?php include('verifynow.php'); ?></div>
   	<p>
-  		Not yet a user ? <a href="register.php">Sign up</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="forgot.php">Forgot Password?</a>
+  		Not yet a user ? <a href="register.php">Sign up</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="forgot_toemail.php">Forgot Password?</a>
   	</p>
   </form>
 </body>

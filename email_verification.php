@@ -9,8 +9,6 @@ $errors = array();
 // connect to the database
 //$db = new mysqli('localhost', 'root', '', 'websec');
 require_once('dbconnect.php');
-
-// LOGIN USER
 if (isset($_POST['verify'])) {
   $username=$_SESSION['username'];
     $password=$_SESSION['pwd'];
